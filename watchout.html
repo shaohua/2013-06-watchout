@@ -12,7 +12,7 @@
     nEnemies: 30,
     padding: 20
   };
-  var gameboard = d3.select('.container').append('svg:svg')
+  var gameBoard = d3.select('.container').append('svg:svg')
                       .attr('width', gameOptions.width)
                       .attr('height', gameOptions.height);
 
@@ -36,7 +36,7 @@
   };
 
   var render = function(enemy_data){
-    var enemies = gameboard.selectAll('circle.enemy').data(enemy_data, function(d){
+    var enemies = gameBoard.selectAll('circle.enemy').data(enemy_data, function(d){
       return d.id;
     });
 
@@ -50,10 +50,47 @@
     enemies.exit()
       .remove();
 
+    var tweenWithCollisionDetection = function(endData) {
+      var enemy = d3.select(this);
+      var startPos = {
+        x: parseFloat( enemy.attr('cx') ),
+        y: parseFloat( enemy.attr('cy') )
+      };
+      var endPos = {
+        x: axes.x(endData.x),
+        y: axes.y(endData.y)
+      };
+      return function(t) {
+        var enemyNextPos = {
+          x: startPos.x + (endPos.x - startPos.x) * t,
+          y: startPos.y + (endPos.y - startPos.y) * t
+        };
+        enemy.attr('cx', enemyNextPos.x)
+             .attr('cy', enemyNextPos.y);
+      };
+    };
+
+    enemies
+      .transition()
+        .duration(500)
+        .attr('r', 10)
+      .transition()
+        .duration(2000)
+        .tween('custom', tweenWithCollisionDetection);
+
+
   };
 
-  var enemyArray = createEnemies();
-  render(enemyArray);
+
+  var gameTurn = function() {
+    var enemyArray = createEnemies();
+    render(enemyArray);
+    setTimeout(gameTurn, 2000);
+  };
+
+  gameTurn();
+
+
 
 </script>
 </body>
