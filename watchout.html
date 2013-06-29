@@ -44,10 +44,10 @@
         this.el = to.append('svg:path')
                     .attr('d', this.path)
                     .attr('fill', this.fill);
-        this.transform = {
+        this.transform({
           x: this.gameOptions.width * 0.5,
           y: this.gameOptions.height * 0.5
-        };
+        });
         this.setupDragging();
         return this;
       },
@@ -100,12 +100,14 @@
         });
       },
       setupDragging: function() {
+        console.log('setupDragging called');
+        var that = this;
         var dragMove = function() {
-          return this.moveRelative(d3.event.dx, d3.event.dy);
+          return that.moveRelative(d3.event.dx, d3.event.dy);
         };
         var drag = d3.behavior.drag()
                     .on('drag', dragMove);
-        this.el.call(drag);
+        return this.el.call(drag);
       }
     };
 
@@ -113,7 +115,7 @@
   };
 
   var players = [];
-  players.push(new Player(gameOptions).render(gameBoard));
+  players.push( (new Player(gameOptions)).render(gameBoard) );
 
   var createEnemies = function(){
     return _( _.range(0, gameOptions.nEnemies) ).map(function(i){
