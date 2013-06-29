@@ -22,11 +22,6 @@
     score:0,
     bestScore:0
   };
-  var axes = {
-    x:d3.scale.linear().domain([0,100]).range([0, gameOptions.width]),
-    y:d3.scale.linear().domain([0,100]).range([0, gameOptions.height])
-  };
-
 
   var Player = function(gameOptions) {
     var output = {};
@@ -134,8 +129,8 @@
   var render = function(){
     enemies.enter()
       .append('svg:circle')
-        .attr('cx', function(){ return Math.random() * gameOptions.width; })
-        .attr('cy', function(){ return Math.random() * gameOptions.height; })
+        .attr('cx', function(){ return (Math.random() * (gameOptions.width - 2 * gameOptions.padding) + gameOptions.padding); })
+        .attr('cy', function(){ return (Math.random() * (gameOptions.height - 2 * gameOptions.padding) + gameOptions.padding); })
         .attr("fill", function() {
           return "hsl(" + Math.random() * 360 + ",100,60%)";
         })
@@ -169,10 +164,10 @@
 
     enemies.transition().duration(2000).attr({
       cx: function(){
-        return Math.random() * gameOptions.width;
+        return (Math.random() * (gameOptions.width - 2 * gameOptions.padding) + gameOptions.padding);
       },
       cy: function(){
-        return Math.random() * gameOptions.height;
+        return (Math.random() * (gameOptions.height - 2 * gameOptions.padding) + gameOptions.padding);
       },
       fill: function() {
         return "hsl(" + Math.random() * 360 + ",100,60%)";
