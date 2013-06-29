@@ -88,12 +88,12 @@
 
         this.el.attr('transform', ("rotate(" + this.angle + "," + (this.getX()) + "," + (this.getY()) + ") ") + ("translate(" + (this.getX()) + "," + (this.getY()) + ")"));
       },
-      moveAbsolute: function(x,y) {
-        this.transform({
-          x: x,
-          y: y
-        });
-      },
+      // moveAbsolute: function(x,y) {
+      //   this.transform({
+      //     x: x,
+      //     y: y
+      //   });
+      // },
       moveRelative: function(dx, dy) {
         this.transform({
           x: this.getX()+dx,
@@ -116,7 +116,8 @@
   };
 
   var players = [];
-  players.push( (new Player(gameOptions)).render(gameBoard) );
+  var player1 = new Player(gameOptions);
+  players.push( player1.render(gameBoard) );
 
   var createEnemies = function(){
     return _( _.range(0, gameOptions.nEnemies) ).map(function(i){
@@ -143,6 +144,20 @@
     enemies.exit()
       .remove();
 
+    var resetScore = function(){
+      console.log('collision');
+      gameStats.score = 0;
+    };
+
+    var checkCollision = function(enemy){
+      var sumRadius = parseFloat(enemy.attr('r')) + player1.r;
+      var distance = Math.sqrt( Math.pow((enemy.attr('cx') - player1.getX()), 2) +
+                                Math.pow((enemy.attr('cy') - player1.getY()), 2) );
+      if(distance < sumRadius) {
+        resetScore();
+      }
+    };
+
     var tweenWithCollisionDetection = function(endData) {
       var enemy = d3.select(this);
       var startPos = {
@@ -153,7 +168,11 @@
         x: axes.x(endData.x),
         y: axes.y(endData.y)
       };
+
+
+
       return function(t) {
+        checkCollision(enemy);
         var enemyNextPos = {
           x: startPos.x + (endPos.x - startPos.x) * t,
           y: startPos.y + (endPos.y - startPos.y) * t
@@ -164,9 +183,6 @@
     };
 
     enemies
-      .transition()
-        .duration(500)
-        .attr('r', 10)
       .transition()
         .duration(2000)
         .tween('custom', tweenWithCollisionDetection);
