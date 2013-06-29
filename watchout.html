@@ -4,6 +4,8 @@
 <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js" type="text/javascript"></script>
 </head>
 <body>
+<div>Current Score: <span id='current-score'></span></div>
+<div>Best Score: <span id='best-score'></span></div>
 <div class='container'></div>
 <script type="text/javascript">
   var gameOptions = {
@@ -100,7 +102,6 @@
         });
       },
       setupDragging: function() {
-        console.log('setupDragging called');
         var that = this;
         var dragMove = function() {
           return that.moveRelative(d3.event.dx, d3.event.dy);
